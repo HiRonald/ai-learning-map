@@ -1,0 +1,9 @@
+id: multimodal-basics
+title: 多模态基础：不止文本
+track: transformers
+status: draft
+level: 2
+prereq: [attention-basics, cnn-basics]
+langs: []
+tags: [multimodal, vlm, vision-language]
+video: null

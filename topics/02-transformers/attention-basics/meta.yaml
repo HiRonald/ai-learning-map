@@ -1,0 +1,9 @@
+id: attention-basics
+title: Attention 基础：信息如何被路由
+track: transformers
+status: draft
+level: 2
+prereq: [mlp-from-scratch]
+langs: []
+tags: [attention, transformer]
+video: null

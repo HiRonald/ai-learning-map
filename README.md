@@ -1,0 +1,48 @@
+# ai-learning-map
+
+用一个仓库建立 **AI 技术全景图**：边学边写最小可运行实验，边产出讲解文与视频。
+
+不追求每个点最深，追求 **覆盖主要技术栈 + 主题之间能连成地图**。
+
+## 仓库怎么读
+
+| 路径 | 作用 |
+|------|------|
+| [`ROADMAP.md`](ROADMAP.md) | 学习地图、完成状态、架构审视 |
+| [`topics/`](topics/) | 主题单元（讲解 + 代码 + 视频大纲） |
+| [`shared/`](shared/) | 跨主题模板与公共约定 |
+| [`site/`](site/) | 文档站（由 topics 生成） |
+| [`media/`](media/) | 视频链接索引（成片不进 git） |
+
+七条轨道（编号=学习顺序）：Foundations → Classic DL → Transformers → Frameworks → **LLM Apps** → AI Infra → Embodied。详见 [`ROADMAP.md`](ROADMAP.md)。
+
+## 主题单元约定
+
+每个主题目录固定包含：
+
+- `README.md`：对外讲解
+- `meta.yaml`：状态 / 标签 / 前置
+- `video.md`：视频大纲
+- `code/`：最小可运行实验（可选）
+
+模板：[`shared/templates/topic/`](shared/templates/topic/)
+
+## 快速开始（当前已发布主题）
+
+从零 MLP（XOR）：
+
+```bash
+make run
+```
+
+文档站：
+
+```bash
+cd site && npm install && npm run docs:dev
+```
+
+## Git 用法（简记）
+
+- **主题内容用目录**，不要用长期分支分区
+- 日常可短命分支 `topic/xxx`，合并进 `main` 后删除
+- 大视频文件不进仓库，只在 `media/index.md` 留链接

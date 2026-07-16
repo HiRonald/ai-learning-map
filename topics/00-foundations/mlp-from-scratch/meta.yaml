@@ -1,0 +1,9 @@
+id: mlp-from-scratch
+title: 从零实现 MLP（XOR）
+track: foundations
+status: published
+level: 1
+prereq: []
+langs: [cpp]
+tags: [mlp, backprop, from-scratch, xor]
+video: null

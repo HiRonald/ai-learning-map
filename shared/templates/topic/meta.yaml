@@ -1,0 +1,9 @@
+id: topic-id
+title: 主题标题
+track: foundations
+status: draft   # draft | published
+level: 1
+prereq: []
+langs: []
+tags: []
+video: null     # 成片链接，发布后填写

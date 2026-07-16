@@ -1,0 +1,9 @@
+id: llmops-observability
+title: LLMOps / 可观测性入门
+track: ai-infra
+status: draft
+level: 2
+prereq: [training-serving-overview, agents-basics]
+langs: []
+tags: [llmops, observability, evaluation]
+video: null

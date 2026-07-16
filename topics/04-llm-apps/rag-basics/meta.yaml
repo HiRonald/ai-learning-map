@@ -1,0 +1,9 @@
+id: rag-basics
+title: RAG 基础：先查再答
+track: llm-apps
+status: draft
+level: 2
+prereq: [prompt-and-context, data-and-representation]
+langs: []
+tags: [rag, retrieval, llm-apps]
+video: null

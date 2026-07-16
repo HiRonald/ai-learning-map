@@ -1,0 +1,9 @@
+id: train-eval-basics
+title: 训练与评测基础
+track: foundations
+status: draft
+level: 1
+prereq: [mlp-from-scratch]
+langs: []
+tags: [evaluation, overfitting, metrics]
+video: null

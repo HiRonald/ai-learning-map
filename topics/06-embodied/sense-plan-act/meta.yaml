@@ -1,0 +1,9 @@
+id: sense-plan-act
+title: 具身最小闭环：Sense · Plan · Act
+track: embodied
+status: draft
+level: 2
+prereq: [training-serving-overview]
+langs: []
+tags: [embodied, agent, robotics]
+video: null

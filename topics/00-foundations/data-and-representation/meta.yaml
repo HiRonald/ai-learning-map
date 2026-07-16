@@ -1,0 +1,9 @@
+id: data-and-representation
+title: 数据与表征
+track: foundations
+status: draft
+level: 1
+prereq: [train-eval-basics]
+langs: []
+tags: [data, embedding, tokenizer, representation]
+video: null

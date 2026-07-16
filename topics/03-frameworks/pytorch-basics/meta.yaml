@@ -1,0 +1,9 @@
+id: pytorch-basics
+title: PyTorch 基础：对照重写 MLP / XOR
+track: frameworks
+status: draft
+level: 2
+prereq: [mlp-from-scratch]
+langs: [python]
+tags: [pytorch, autograd]
+video: null

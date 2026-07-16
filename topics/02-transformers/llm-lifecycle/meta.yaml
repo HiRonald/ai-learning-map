@@ -1,0 +1,9 @@
+id: llm-lifecycle
+title: LLM 生命周期：预训练 / SFT / 对齐
+track: transformers
+status: draft
+level: 2
+prereq: [attention-basics]
+langs: []
+tags: [llm, pretrain, sft, alignment]
+video: null

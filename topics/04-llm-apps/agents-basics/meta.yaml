@@ -1,0 +1,9 @@
+id: agents-basics
+title: Agent 基础：工具循环
+track: llm-apps
+status: draft
+level: 2
+prereq: [rag-basics]
+langs: []
+tags: [agent, tools, react, llm-apps]
+video: null

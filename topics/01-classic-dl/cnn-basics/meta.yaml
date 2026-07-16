@@ -1,0 +1,9 @@
+id: cnn-basics
+title: CNN 基础：卷积在做什么
+track: classic-dl
+status: draft
+level: 2
+prereq: [mlp-from-scratch]
+langs: []
+tags: [cnn, convolution, vision]
+video: null

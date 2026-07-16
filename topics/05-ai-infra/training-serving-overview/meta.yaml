@@ -1,0 +1,9 @@
+id: training-serving-overview
+title: 训练与推理鸟瞰
+track: ai-infra
+status: draft
+level: 2
+prereq: [pytorch-basics]
+langs: []
+tags: [infra, serving, training]
+video: null

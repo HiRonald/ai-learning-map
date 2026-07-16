@@ -1,0 +1,9 @@
+id: efficient-finetune
+title: 高效微调：LoRA / PEFT 直觉
+track: transformers
+status: draft
+level: 2
+prereq: [llm-lifecycle]
+langs: []
+tags: [lora, peft, finetune]
+video: null
