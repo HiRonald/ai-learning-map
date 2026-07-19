@@ -1,9 +1,9 @@
 id: mlp-from-scratch
-title: 从零实现 MLP（XOR）
+title: 从零实现 MLP
 track: foundations
 status: published
 level: 1
 prereq: []
 langs: [cpp]
-tags: [mlp, backprop, from-scratch, xor]
+tags: [mlp, backprop, from-scratch, xor, regression, fashion-mnist]
 video: null

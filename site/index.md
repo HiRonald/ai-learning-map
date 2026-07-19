@@ -23,7 +23,8 @@
 
 ```bash
 # 仓库根目录
-make run
+make run                 # xor
+make run DEMO=fashion    # 首次下载 Fashion-MNIST
 ```
 
 ## 本地预览本站

@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "nn/matrix.h"
 
 #include <stdexcept>
 #include <cmath>

@@ -1,5 +1,7 @@
 # 根目录薄封装：C++ 主题走 CMake；文档站走 npm（site/）
 BUILD_DIR := build
+DEMO ?= xor
+MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 
 .PHONY: all configure build run clean rebuild docs docs-dev docs-build
 
@@ -7,12 +9,14 @@ all: build
 
 configure:
 	cmake -S . -B $(BUILD_DIR) -DCMAKE_BUILD_TYPE=Release
+	@ln -sfn $(BUILD_DIR)/compile_commands.json compile_commands.json
 
 build: configure
 	cmake --build $(BUILD_DIR)
 
+# DEMO=xor|sine|fashion|list
 run: build
-	cmake --build $(BUILD_DIR) --target run
+	MLP_DATA_DIR="$(MLP_DATA_DIR)" $(BUILD_DIR)/mlp_demo $(DEMO)
 
 clean:
 	rm -rf $(BUILD_DIR)

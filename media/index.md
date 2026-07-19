@@ -4,7 +4,7 @@
 
 | Topic ID | 标题 | 平台 | 链接 | 备注 |
 |----------|------|------|------|------|
-| mlp-from-scratch | 从零实现 MLP（XOR） | — | — | 待录制 |
+| mlp-from-scratch | 从零实现 MLP | — | — | 待录制 |
 | train-eval-basics | 训练与评测基础 | — | — | 待录制 |
 | data-and-representation | 数据与表征 | — | — | 待录制 |
 | cnn-basics | CNN 基础 | — | — | 待录制 |

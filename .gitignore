@@ -1,6 +1,9 @@
 # 构建产物（CMake out-of-source）
 /build/
 
+# 主题下载的数据集（体积大，首次运行自动拉取）
+topics/**/data/
+
 # 文档站
 site/node_modules/
 site/.vitepress/dist/
@@ -18,3 +21,5 @@ compile_commands.json
 .idea/
 *.swp
 *~
+
+.DS_Store

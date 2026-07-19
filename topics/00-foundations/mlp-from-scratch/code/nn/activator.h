@@ -1,6 +1,6 @@
 #pragma once
 
-#include "matrix.h"
+#include "nn/matrix.h"
 
 #include <string>
 #include <functional>

@@ -5,5 +5,5 @@ status: draft
 level: 2
 prereq: [prompt-and-context, data-and-representation]
 langs: []
-tags: [rag, retrieval, llm-apps]
+tags: [rag, retrieval, memory, llm-apps]
 video: null

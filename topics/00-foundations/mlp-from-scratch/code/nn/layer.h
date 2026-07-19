@@ -1,9 +1,10 @@
 #pragma once
 
-#include "matrix.h"
-#include "activator.h"
+#include "nn/matrix.h"
+#include "nn/activator.h"
 
 #include <memory>
+#include <string>
 
 // 全连接层：y = activator(x @ W + b)
 // 权重形状 (in, out)，输入形状 (batch, in)，输出形状 (batch, out)
@@ -27,7 +28,8 @@ public:
     // 反向：根据上游梯度更新参数，并返回对本层输入的梯度
     Matrix backward(const Matrix& upstream_gradient);
 
-    void print(const std::string& name = "") const;
+    // verbose=true 时额外打印 W/b（小网络调试用；大网络建议 false）
+    void print(const std::string& name = "", bool verbose = true) const;
 
     int get_input_size() const;
     int get_output_size() const;

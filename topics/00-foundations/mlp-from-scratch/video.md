@@ -1,10 +1,10 @@
-# 视频大纲：从零实现 MLP（XOR）
+# 视频大纲：从零实现 MLP
 
-目标时长：8–12 分钟
+目标时长：10–14 分钟
 
 ## 钩子（15–30s）
 
-「XOR 只有 4 个样本，但单层感知机学不会——我们用纯 C++ 手写一个能学会的小网络。」
+「XOR 只有 4 个样本，但单层感知机学不会——我们用纯 C++ 手写小网络，再下载 Fashion-MNIST，让终端用 ASCII 认出鞋子和包。」
 
 ## 第一段：直觉
 
@@ -13,27 +13,29 @@
 
 ## 第二段：结构
 
-对照仓库模块：
+对照仓库：
 
-- `Matrix`：数值底座
-- `Layer`：`XW + b` + 激活
-- `Mlp`：叠层 + 损失梯度入口
+- `code/nn/`：`Matrix` / `Layer` / `Mlp`
+- `code/demos/`：`xor` → `sine` → `fashion`
 
-点出两个易错点：
+易错点：
 
-1. MSE 梯度是 `(ŷ − y) / N`，不是乱做矩阵乘
-2. 回传输入梯度时要用 **更新前** 的 `W`
+1. MSE 梯度是 `(ŷ − y) / N`
+2. 回传输入梯度要用 **更新前** 的 `W`
 
 ## 第三段：实验演示
 
 ```bash
-make run
+make run                 # xor
+make run DEMO=sine       # 回归
+make run DEMO=fashion    # 真数据 + ASCII 画廊
 ```
 
-指出日志里的 `loss` / `acc`，以及推理表里四个样本的 raw / 0-1 预测。
+- `xor` / `sine`：玩具数据跑通闭环（分类 vs 回归）
+- `fashion`：下载 IDX、`softmax_ce`、test acc、hit/miss ASCII
 
 ## 结尾引导
 
-- 收获：你已经拥有一条可运行的学习闭环
+- 收获：可运行闭环 + 三条递进 demo
 - 下一集预告：CNN——卷积到底在共享什么
-- 仓库路径：`topics/00-foundations/mlp-from-scratch/`
+- 路径：`topics/00-foundations/mlp-from-scratch/`

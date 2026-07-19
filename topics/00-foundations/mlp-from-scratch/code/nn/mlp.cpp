@@ -1,4 +1,4 @@
-#include "mlp.h"
+#include "nn/mlp.h"
 
 #include <algorithm>
 #include <cmath>
@@ -48,6 +48,55 @@ Matrix bce_gradient(const Matrix& output, const Matrix& label) {
     return grad;
 }
 
+// 行方向 softmax（数值稳定：先减行 max）
+Matrix softmax_rows(const Matrix& logits) {
+    const int rows = logits.get_row_number();
+    const int cols = logits.get_col_number();
+    Matrix probs(rows, cols);
+    for (int i = 0; i < rows; ++i) {
+        double max_v = logits.get_data(i, 0);
+        for (int j = 1; j < cols; ++j) {
+            max_v = std::max(max_v, logits.get_data(i, j));
+        }
+        double sum = 0.0;
+        for (int j = 0; j < cols; ++j) {
+            double e = std::exp(logits.get_data(i, j) - max_v);
+            probs.set_data(i, j, e);
+            sum += e;
+        }
+        for (int j = 0; j < cols; ++j) {
+            probs.set_data(i, j, probs.get_data(i, j) / sum);
+        }
+    }
+    return probs;
+}
+
+// Softmax + 多类交叉熵；output 是 logits，label 是 one-hot
+// L = -mean_i sum_k y_ik log p_ik
+float softmax_ce_loss(const Matrix& logits, const Matrix& label) {
+    Matrix probs = softmax_rows(logits);
+    double total = 0.0;
+    const int rows = logits.get_row_number();
+    const int cols = logits.get_col_number();
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            double y = label.get_data(i, j);
+            if (y <= 0.0) {
+                continue;
+            }
+            double p = std::max(1e-12, probs.get_data(i, j));
+            total += -y * std::log(p);
+        }
+    }
+    return static_cast<float>(total / rows);
+}
+
+// dL/dlogits = (softmax(logits) - y) / batch
+Matrix softmax_ce_gradient(const Matrix& logits, const Matrix& label) {
+    Matrix probs = softmax_rows(logits);
+    return (probs - label) / static_cast<double>(logits.get_row_number());
+}
+
 }  // namespace
 
 Mlp::Mlp() : _loss_type(""), _loss(0.0f) {}
@@ -72,6 +121,10 @@ void Mlp::setup_loss(const std::string& loss_type) {
     } else if (loss_type == "cross_entropy" || loss_type == "bce") {
         _loss_function = bce_loss;
         _loss_gradient_function = bce_gradient;
+    } else if (loss_type == "softmax_ce") {
+        // 多类：输出层用 identity（logits），标签为 one-hot
+        _loss_function = softmax_ce_loss;
+        _loss_gradient_function = softmax_ce_gradient;
     } else {
         throw std::invalid_argument("Invalid loss type: " + loss_type);
     }
@@ -128,13 +181,13 @@ void Mlp::backward(const Matrix& label) {
     }
 }
 
-void Mlp::print_architecture() const {
+void Mlp::print_architecture(bool verbose) const {
     std::cout << "MLP architecture (" << _layers.size() << " layers, loss=" << _loss_type << "):\n";
     for (size_t i = 0; i < _layers.size(); ++i) {
         bool is_output = (i + 1 == _layers.size());
         std::string name = is_output ? ("OutputLayer" + std::to_string(i))
                                      : ("HiddenLayer" + std::to_string(i));
-        _layers[i]->print("  " + name);
+        _layers[i]->print("  " + name, verbose);
     }
 }
 

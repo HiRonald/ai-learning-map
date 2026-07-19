@@ -5,9 +5,9 @@
 #include <functional>
 #include <memory>
 
-#include "matrix.h"
-#include "layer.h"
-#include "activator.h"
+#include "nn/matrix.h"
+#include "nn/layer.h"
+#include "nn/activator.h"
 
 // 多层感知机：按顺序堆叠若干全连接层。
 // 隐藏层与输出层都是 Layer，区别主要在激活函数选择（输出层可单独配置）。
@@ -27,7 +27,7 @@ public:
     void forward(const Matrix& input);
     void backward(const Matrix& label);
 
-    void print_architecture() const;
+    void print_architecture(bool verbose = true) const;
     const Matrix& get_output() const;
 
 private:

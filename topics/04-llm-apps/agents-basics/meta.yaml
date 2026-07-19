@@ -5,5 +5,5 @@ status: draft
 level: 2
 prereq: [rag-basics]
 langs: []
-tags: [agent, tools, react, llm-apps]
+tags: [agent, tools, react, mcp, memory, llm-apps]
 video: null

@@ -1,0 +1,8 @@
+# Fallback when compile_commands.json is missing (run `make configure` for full accuracy).
+# Headers are resolved from topics/.../code as the include root (see CMakeLists.txt).
+CompileFlags:
+  Add:
+    - -std=c++17
+    - -Itopics/00-foundations/mlp-from-scratch/code
+  Remove:
+    - -W*

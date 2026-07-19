@@ -1,4 +1,4 @@
-#include "activator.h"
+#include "nn/activator.h"
 
 #include <algorithm>
 #include <cmath>

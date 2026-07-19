@@ -1,4 +1,4 @@
-#include "layer.h"
+#include "nn/layer.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -103,13 +103,15 @@ Matrix Layer::optimize(const Matrix& param, const Matrix& gradient) const {
     return param - gradient.mul(_learning_rate);
 }
 
-void Layer::print(const std::string& name) const {
+void Layer::print(const std::string& name, bool verbose) const {
     std::string prefix = name.empty() ? "Layer" : name;
     std::cout << prefix << " [" << _input_size << " -> " << _output_size
               << ", activator=" << _activator->get_name()
               << ", lr=" << _learning_rate << "]\n";
-    _weights.print(prefix + ".W");
-    _biases.print(prefix + ".b");
+    if (verbose) {
+        _weights.print(prefix + ".W");
+        _biases.print(prefix + ".b");
+    }
 }
 
 int Layer::get_input_size() const { return _input_size; }

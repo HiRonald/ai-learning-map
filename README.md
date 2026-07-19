@@ -29,10 +29,11 @@
 
 ## 快速开始（当前已发布主题）
 
-从零 MLP（XOR）：
+从零 MLP（`xor` / `sine` / `fashion`）：
 
 ```bash
-make run
+make run                 # 默认 xor
+make run DEMO=fashion    # 首次自动下载 Fashion-MNIST
 ```
 
 文档站：
