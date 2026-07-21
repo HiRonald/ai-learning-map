@@ -6,4 +6,4 @@
 |------|------|
 | [mlp-from-scratch](./mlp-from-scratch/) | published |
 | [train-eval-basics](./train-eval-basics/) | published |
-| [data-and-representation](./data-and-representation/) | draft |
+| [data-and-representation](./data-and-representation/) | published |

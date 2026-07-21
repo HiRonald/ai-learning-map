@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(MLP_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/mlp-from-scratch/code)
 set(TRAIN_EVAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/train-eval-basics/code)
+set(DATA_REPR_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/data-and-representation/code)
 
 # 共享：手写 nn + IDX/下载工具（供多个主题可执行文件复用）
 add_library(mlp_core STATIC
@@ -36,6 +37,12 @@ add_executable(train_eval_demo
 )
 target_link_libraries(train_eval_demo PRIVATE mlp_core)
 target_compile_options(train_eval_demo PRIVATE -Wall -Wextra)
+
+add_executable(data_repr_demo
+    ${DATA_REPR_CODE_DIR}/main.cpp
+)
+target_link_libraries(data_repr_demo PRIVATE mlp_core)
+target_compile_options(data_repr_demo PRIVATE -Wall -Wextra)
 
 add_custom_target(run
     COMMAND $<TARGET_FILE:mlp_demo> xor

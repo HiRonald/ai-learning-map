@@ -26,7 +26,7 @@
 |------|------|------|
 | [mlp-from-scratch](topics/00-foundations/mlp-from-scratch/) | published | 纯 C++ MLP：xor → sine → Fashion-MNIST，打通前向/反向/更新 |
 | [train-eval-basics](topics/00-foundations/train-eval-basics/) | published | Fashion 切 train/val/test；normal vs overfit 学习曲线 |
-| [data-and-representation](topics/00-foundations/data-and-representation/) | draft | 数据、embedding、tokenizer |
+| [data-and-representation](topics/00-foundations/data-and-representation/) | published | 查表 + bigram MLP（第一层 = embedding） |
 
 ### 01 · Classic DL
 

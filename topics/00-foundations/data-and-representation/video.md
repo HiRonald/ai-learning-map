@@ -8,17 +8,22 @@
 
 ## 第一段：直觉
 
-表征 = 约定好的数值化世界。
+表征 = 约定好的数值化世界；对照 Fashion 像素向量。
 
 ## 第二段：结构
 
-数据管道简图 + tokenizer/embedding 各在哪一层。
+管道：原文 → token → id → embedding 查表；`<unk>` 处理 OOV。
 
 ## 第三段：实验演示
 
-（待代码就绪）
+```bash
+make run-repr
+```
+
+Part A：词表 / id / 查表。  
+Part B：bigram 训练、探针、贪心续写；点明第一层 = embedding。
 
 ## 结尾引导
 
-- 下一站：CNN / RNN——结构如何匹配数据形态
+- 下一站：PyTorch（`nn.Embedding`）或 CNN / RNN——结构如何匹配这些张量
 - 路径：`topics/00-foundations/data-and-representation/`

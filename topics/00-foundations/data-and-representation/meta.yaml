@@ -1,9 +1,9 @@
 id: data-and-representation
 title: 数据与表征
 track: foundations
-status: draft
+status: published
 level: 1
 prereq: [train-eval-basics]
-langs: []
-tags: [data, embedding, tokenizer, representation]
+langs: [cpp]
+tags: [data, embedding, tokenizer, representation, bigram, mlp]
 video: null

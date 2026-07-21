@@ -5,7 +5,7 @@ MODE ?= normal
 MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 TRAIN_EVAL_DATA_DIR ?= $(CURDIR)/topics/00-foundations/train-eval-basics/data
 
-.PHONY: all configure build run run-eval clean rebuild docs docs-dev docs-build
+.PHONY: all configure build run run-eval run-repr clean rebuild docs docs-dev docs-build
 
 all: build
 
@@ -24,6 +24,10 @@ run: build
 run-eval: build
 	MLP_DATA_DIR="$(MLP_DATA_DIR)" TRAIN_EVAL_DATA_DIR="$(TRAIN_EVAL_DATA_DIR)" \
 		$(BUILD_DIR)/train_eval_demo $(MODE)
+
+# data-and-representation：tokenizer + embedding 查表（不训练）
+run-repr: build
+	$(BUILD_DIR)/data_repr_demo
 
 clean:
 	rm -rf $(BUILD_DIR)

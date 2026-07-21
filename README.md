@@ -44,6 +44,12 @@ make run-eval MODE=overfit      # 小训练集拉长 epoch
 make run-eval MODE=earlystop    # 同设置 + 早停
 ```
 
+数据与表征（查表 + bigram MLP）：
+
+```bash
+make run-repr
+```
+
 文档站：
 
 ```bash
