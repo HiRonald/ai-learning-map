@@ -36,6 +36,14 @@ make run                 # 默认 xor
 make run DEMO=fashion    # 首次自动下载 Fashion-MNIST
 ```
 
+训练与评测（train / val / test + 过拟合对照）：
+
+```bash
+make run-eval                   # normal
+make run-eval MODE=overfit      # 小训练集拉长 epoch
+make run-eval MODE=earlystop    # 同设置 + 早停
+```
+
 文档站：
 
 ```bash

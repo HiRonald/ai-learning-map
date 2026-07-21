@@ -192,3 +192,22 @@ void Mlp::print_architecture(bool verbose) const {
 }
 
 const Matrix& Mlp::get_output() const { return _output; }
+
+Mlp::ParamSnapshot Mlp::capture_params() const {
+    ParamSnapshot snap;
+    snap.reserve(_layers.size());
+    for (const auto& layer : _layers) {
+        snap.emplace_back(layer->get_weights(), layer->get_biases());
+    }
+    return snap;
+}
+
+void Mlp::restore_params(const ParamSnapshot& snapshot) {
+    if (snapshot.size() != _layers.size()) {
+        throw std::invalid_argument("Mlp::restore_params: layer count mismatch");
+    }
+    for (size_t i = 0; i < _layers.size(); ++i) {
+        _layers[i]->set_weights(snapshot[i].first);
+        _layers[i]->set_biases(snapshot[i].second);
+    }
+}

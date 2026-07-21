@@ -5,5 +5,5 @@
 | 主题 | 状态 |
 |------|------|
 | [mlp-from-scratch](./mlp-from-scratch/) | published |
-| [train-eval-basics](./train-eval-basics/) | draft |
+| [train-eval-basics](./train-eval-basics/) | published |
 | [data-and-representation](./data-and-representation/) | draft |

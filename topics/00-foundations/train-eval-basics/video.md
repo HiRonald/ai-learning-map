@@ -8,15 +8,21 @@
 
 ## 第一段：直觉
 
-train / val / test 各管什么。
+train / val / test 各管什么；为什么训练日志不该盯 test。
 
 ## 第二段：结构
 
-过拟合学习曲线 + 选错指标的反例。
+学习曲线：正常一起涨 vs 过拟合分叉；准确率 vs per-class recall。
 
 ## 第三段：实验演示
 
-（待代码就绪）
+```bash
+make run-eval
+make run-eval MODE=overfit
+make run-eval MODE=earlystop
+```
+
+指着表格说：哪一列是 val、哪一行开始分叉、`*` 是 best、早停如何砍掉无效 epoch、最后才碰 test。
 
 ## 结尾引导
 

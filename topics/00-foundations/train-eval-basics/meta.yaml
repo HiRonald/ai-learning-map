@@ -1,9 +1,9 @@
 id: train-eval-basics
 title: 训练与评测基础
 track: foundations
-status: draft
+status: published
 level: 1
 prereq: [mlp-from-scratch]
-langs: []
-tags: [evaluation, overfitting, metrics]
+langs: [cpp]
+tags: [evaluation, overfitting, metrics, fashion-mnist, train-val-test]
 video: null

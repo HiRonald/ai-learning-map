@@ -7,7 +7,8 @@
 ## 从这里开始
 
 - [学习路线图](/ROADMAP) — Track 与主题进度
-- [MLP from scratch](/topics/00-foundations/mlp-from-scratch/) — 当前已发布主题
+- [MLP from scratch](/topics/00-foundations/mlp-from-scratch/) — 手写前向/反向
+- [训练与评测基础](/topics/00-foundations/train-eval-basics/) — train/val/test 与过拟合
 - [视频索引](/media/) — 成片外链
 
 ## 仓库结构（简）
@@ -25,6 +26,7 @@
 # 仓库根目录
 make run                 # xor
 make run DEMO=fashion    # 首次下载 Fashion-MNIST
+make run-eval            # train/val/test 学习曲线
 ```
 
 ## 本地预览本站

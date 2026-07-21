@@ -30,6 +30,11 @@ public:
     void print_architecture(bool verbose = true) const;
     const Matrix& get_output() const;
 
+    // 早停等场景：按层保存 / 恢复 (W, b)
+    using ParamSnapshot = std::vector<std::pair<Matrix, Matrix>>;
+    ParamSnapshot capture_params() const;
+    void restore_params(const ParamSnapshot& snapshot);
+
 private:
     std::vector<std::shared_ptr<Layer>> _layers;
     std::string _loss_type;

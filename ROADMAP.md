@@ -25,7 +25,7 @@
 | 主题 | 状态 | 说明 |
 |------|------|------|
 | [mlp-from-scratch](topics/00-foundations/mlp-from-scratch/) | published | 纯 C++ MLP：xor → sine → Fashion-MNIST，打通前向/反向/更新 |
-| [train-eval-basics](topics/00-foundations/train-eval-basics/) | draft | 训练/验证、过拟合、指标 |
+| [train-eval-basics](topics/00-foundations/train-eval-basics/) | published | Fashion 切 train/val/test；normal vs overfit 学习曲线 |
 | [data-and-representation](topics/00-foundations/data-and-representation/) | draft | 数据、embedding、tokenizer |
 
 ### 01 · Classic DL
