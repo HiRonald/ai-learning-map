@@ -3,7 +3,7 @@ title: Attention 基础：信息如何被路由
 track: transformers
 status: draft
 level: 2
-prereq: [mlp-from-scratch]
+prereq: [mlp-from-scratch, residual-basics]
 langs: []
 tags: [attention, transformer]
 video: null

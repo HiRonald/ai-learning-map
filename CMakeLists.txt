@@ -10,6 +10,7 @@ set(MLP_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/mlp-from-scra
 set(TRAIN_EVAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/train-eval-basics/code)
 set(DATA_REPR_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/data-and-representation/code)
 set(CNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/cnn-basics/code)
+set(RESIDUAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/residual-basics/code)
 
 # 共享：手写 nn + IDX/下载工具（供多个主题可执行文件复用）
 add_library(mlp_core STATIC
@@ -64,6 +65,24 @@ add_executable(cnn_demo
 )
 target_link_libraries(cnn_demo PRIVATE cnn_core)
 target_compile_options(cnn_demo PRIVATE -Wall -Wextra)
+
+add_library(residual_core STATIC
+    ${RESIDUAL_CODE_DIR}/residual/block.cpp
+    ${RESIDUAL_CODE_DIR}/residual/map_net.cpp
+    ${RESIDUAL_CODE_DIR}/residual/conv_block.cpp
+    ${RESIDUAL_CODE_DIR}/residual/cnn_net.cpp
+)
+target_include_directories(residual_core PUBLIC ${RESIDUAL_CODE_DIR})
+target_link_libraries(residual_core PUBLIC cnn_core)
+target_compile_options(residual_core PRIVATE -Wall -Wextra)
+
+add_executable(residual_demo
+    ${RESIDUAL_CODE_DIR}/main.cpp
+    ${RESIDUAL_CODE_DIR}/demos/identity_demo.cpp
+    ${RESIDUAL_CODE_DIR}/demos/fashion_demo.cpp
+)
+target_link_libraries(residual_demo PRIVATE residual_core)
+target_compile_options(residual_demo PRIVATE -Wall -Wextra)
 
 add_custom_target(run
     COMMAND $<TARGET_FILE:mlp_demo> xor

@@ -11,6 +11,7 @@
 - [训练与评测基础](/topics/00-foundations/train-eval-basics/) — train/val/test 与过拟合
 - [数据与表征](/topics/00-foundations/data-and-representation/) — tokenize → embedding 查表
 - [CNN 基础](/topics/01-classic-dl/cnn-basics/) — 局部连接与权值共享
+- [残差连接](/topics/01-classic-dl/residual-basics/) — 深度可训的恒等捷径
 - [视频索引](/media/) — 成片外链
 
 ## 仓库结构（简）
@@ -31,6 +32,7 @@ make run DEMO=fashion    # 首次下载 Fashion-MNIST
 make run-eval            # train/val/test 学习曲线
 make run-repr            # tokenize → embedding 查表
 make run-cnn             # filter；DEMO=param|fashion
+make run-residual        # identity；DEMO=fashion
 ```
 
 ## 本地预览本站

@@ -8,6 +8,7 @@
 | train-eval-basics | 训练与评测基础 | — | — | 待录制 |
 | data-and-representation | 数据与表征 | — | — | 待录制 |
 | cnn-basics | CNN 基础 | — | — | 待录制 |
+| residual-basics | 残差连接 | — | — | 待录制 |
 | rnn-seq | RNN 序列 | — | — | 待录制 |
 | diffusion-basics | Diffusion 基础 | — | — | 待录制 |
 | attention-basics | Attention 基础 | — | — | 待录制 |

@@ -3,7 +3,7 @@ title: Diffusion 基础：生成式另一条主线
 track: classic-dl
 status: draft
 level: 2
-prereq: [cnn-basics]
+prereq: [cnn-basics, residual-basics]
 langs: []
 tags: [diffusion, generative, dit, flow-matching]
 video: null

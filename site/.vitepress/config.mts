@@ -55,6 +55,7 @@ export default defineConfig({
         items: [
           { text: '轨道说明', link: '/topics/01-classic-dl/' },
           { text: 'CNN 基础', link: '/topics/01-classic-dl/cnn-basics/' },
+          { text: '残差连接', link: '/topics/01-classic-dl/residual-basics/' },
           { text: 'RNN 序列', link: '/topics/01-classic-dl/rnn-seq/' },
           { text: 'Diffusion 基础', link: '/topics/01-classic-dl/diffusion-basics/' },
         ],

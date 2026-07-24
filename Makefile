@@ -5,7 +5,7 @@ MODE ?= normal
 MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 TRAIN_EVAL_DATA_DIR ?= $(CURDIR)/topics/00-foundations/train-eval-basics/data
 
-.PHONY: all configure build run run-eval run-repr run-cnn clean rebuild docs docs-dev docs-build
+.PHONY: all configure build run run-eval run-repr run-cnn run-residual clean rebuild docs docs-dev docs-build
 
 all: build
 
@@ -35,6 +35,12 @@ run-cnn: build
 	@demo="$(DEMO)"; \
 	if [ "$$demo" = "xor" ]; then demo=filter; fi; \
 	MLP_DATA_DIR="$(MLP_DATA_DIR)" $(BUILD_DIR)/cnn_demo $$demo
+
+# residual-basics：DEMO=identity|fashion|list（默认 identity；xor 时改走 identity）
+run-residual: build
+	@demo="$(DEMO)"; \
+	if [ "$$demo" = "xor" ]; then demo=identity; fi; \
+	MLP_DATA_DIR="$(MLP_DATA_DIR)" $(BUILD_DIR)/residual_demo $$demo
 
 clean:
 	rm -rf $(BUILD_DIR)

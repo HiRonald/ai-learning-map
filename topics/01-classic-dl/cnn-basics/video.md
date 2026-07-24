@@ -26,5 +26,5 @@ make run-cnn DEMO=fashion    # 小 CNN 训 Fashion 子集
 
 ## 结尾引导
 
-- 下一站：RNN，或直接跳 Attention / PyTorch 对照 `nn.Conv2d`（那里墙钟才会正常）
+- 下一站：残差（深度可训）→ RNN 或直接跳 Attention
 - 路径：`topics/01-classic-dl/cnn-basics/`

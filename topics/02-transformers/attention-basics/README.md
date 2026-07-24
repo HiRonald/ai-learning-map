@@ -21,4 +21,5 @@ Query / Key / Value：用相似度决定从哪里取信息，而不是固定只�
 ## 局限与下一步
 
 - 不覆盖完整 GPT 训练
+- 前置建议先看 [残差连接](../../01-classic-dl/residual-basics/)（Transformer block 默认 \(x + \mathrm{Attn}(x)\)）
 - 下一站：[LLM 生命周期](../llm-lifecycle/) → [多模态](../multimodal-basics/) / [高效微调](../efficient-finetune/) → [LLM Apps](../../04-llm-apps/)

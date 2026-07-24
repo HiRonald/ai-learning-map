@@ -57,6 +57,13 @@ make run-cnn                 # 默认 filter
 make run-cnn DEMO=fashion    # 复用 MLP 的 Fashion 缓存
 ```
 
+残差连接（`identity` / `fashion`）：
+
+```bash
+make run-residual                 # 默认 identity：深网学 y=x
+make run-residual DEMO=fashion
+```
+
 文档站：
 
 ```bash

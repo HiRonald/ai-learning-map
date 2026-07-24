@@ -1,0 +1,9 @@
+id: residual-basics
+title: 残差连接：为什么深了还能训
+track: classic-dl
+status: published
+level: 2
+prereq: [mlp-from-scratch, cnn-basics]
+langs: [cpp]
+tags: [residual, resnet, skip-connection, depth, from-scratch]
+video: null

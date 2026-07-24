@@ -16,7 +16,7 @@
 
 1. 前向加噪 / 反向去噪示意；不展开完整 SDE 推导。
 2. **现代化衔接（点到即可）**
-   - 早期常见 U-Net 骨架做去噪网络
+   - 早期常见 U-Net 骨架做去噪网络（跨层 **concat skip** ≠ [残差](../residual-basics/) 的 \(x+F(x)\)，但常一起出现）
    - 规模化路径转向 **DiT**（Diffusion Transformer）等：去噪器本身是 Transformer
    - **Flow matching** / rectified flow：另一条「从噪声到数据」的连续路径表述，工业生成里越来越常见
 3. 与自回归 LLM：都是生成，但归纳偏置与采样过程不同。
