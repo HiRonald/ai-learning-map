@@ -32,7 +32,7 @@
 
 | 主题 | 状态 | 说明 |
 |------|------|------|
-| [cnn-basics](topics/01-classic-dl/cnn-basics/) | draft | 局部连接与权值共享 |
+| [cnn-basics](topics/01-classic-dl/cnn-basics/) | published | 局部连接与权值共享；filter → param → Fashion CNN |
 | [rnn-seq](topics/01-classic-dl/rnn-seq/) | draft | 状态沿时间传递 |
 | [diffusion-basics](topics/01-classic-dl/diffusion-basics/) | draft | 生成式：噪声 ↔ 数据（含 DiT/flow 衔接） |
 

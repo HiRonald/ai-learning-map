@@ -50,6 +50,13 @@ make run-eval MODE=earlystop    # 同设置 + 早停
 make run-repr
 ```
 
+CNN 基础（`filter` / `param` / `fashion`）：
+
+```bash
+make run-cnn                 # 默认 filter
+make run-cnn DEMO=fashion    # 复用 MLP 的 Fashion 缓存
+```
+
 文档站：
 
 ```bash

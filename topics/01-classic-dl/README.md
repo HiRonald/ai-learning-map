@@ -4,6 +4,6 @@
 
 | 主题 | 状态 |
 |------|------|
-| [cnn-basics](./cnn-basics/) | draft |
+| [cnn-basics](./cnn-basics/) | published |
 | [rnn-seq](./rnn-seq/) | draft |
 | [diffusion-basics](./diffusion-basics/) | draft |

@@ -141,4 +141,4 @@ make clean
 ## 12. 后续可扩展
 
 - Adam / 学习率衰减、权重存取、Dropout / BatchNorm
-- `fashion` 加大子集，或与 CNN 主题对照
+- 与 [CNN 基础](../../01-classic-dl/cnn-basics/) 对照同一 Fashion 数据（`make run-cnn DEMO=fashion`）

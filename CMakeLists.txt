@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(MLP_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/mlp-from-scratch/code)
 set(TRAIN_EVAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/train-eval-basics/code)
 set(DATA_REPR_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/data-and-representation/code)
+set(CNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/cnn-basics/code)
 
 # 共享：手写 nn + IDX/下载工具（供多个主题可执行文件复用）
 add_library(mlp_core STATIC
@@ -43,6 +44,26 @@ add_executable(data_repr_demo
 )
 target_link_libraries(data_repr_demo PRIVATE mlp_core)
 target_compile_options(data_repr_demo PRIVATE -Wall -Wextra)
+
+add_library(cnn_core STATIC
+    ${CNN_CODE_DIR}/cnn/tensor.cpp
+    ${CNN_CODE_DIR}/cnn/conv2d.cpp
+    ${CNN_CODE_DIR}/cnn/pool2d.cpp
+    ${CNN_CODE_DIR}/cnn/ops.cpp
+    ${CNN_CODE_DIR}/cnn/net.cpp
+)
+target_include_directories(cnn_core PUBLIC ${CNN_CODE_DIR})
+target_link_libraries(cnn_core PUBLIC mlp_core)
+target_compile_options(cnn_core PRIVATE -Wall -Wextra)
+
+add_executable(cnn_demo
+    ${CNN_CODE_DIR}/main.cpp
+    ${CNN_CODE_DIR}/demos/filter_demo.cpp
+    ${CNN_CODE_DIR}/demos/param_demo.cpp
+    ${CNN_CODE_DIR}/demos/fashion_demo.cpp
+)
+target_link_libraries(cnn_demo PRIVATE cnn_core)
+target_compile_options(cnn_demo PRIVATE -Wall -Wextra)
 
 add_custom_target(run
     COMMAND $<TARGET_FILE:mlp_demo> xor
