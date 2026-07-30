@@ -6,5 +6,5 @@
 |------|------|
 | [cnn-basics](./cnn-basics/) | published |
 | [residual-basics](./residual-basics/) | published |
-| [rnn-seq](./rnn-seq/) | draft |
+| [rnn-seq](./rnn-seq/) | published |
 | [diffusion-basics](./diffusion-basics/) | draft |

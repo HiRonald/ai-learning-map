@@ -4,8 +4,9 @@ DEMO ?= xor
 MODE ?= normal
 MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 TRAIN_EVAL_DATA_DIR ?= $(CURDIR)/topics/00-foundations/train-eval-basics/data
+RNN_DATA_DIR ?= $(CURDIR)/topics/01-classic-dl/rnn-seq/data
 
-.PHONY: all configure build run run-eval run-repr run-cnn run-residual clean rebuild docs docs-dev docs-build
+.PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn clean rebuild docs docs-dev docs-build
 
 all: build
 
@@ -41,6 +42,12 @@ run-residual: build
 	@demo="$(DEMO)"; \
 	if [ "$$demo" = "xor" ]; then demo=identity; fi; \
 	MLP_DATA_DIR="$(MLP_DATA_DIR)" $(BUILD_DIR)/residual_demo $$demo
+
+# rnn-seq：DEMO=unroll|temp|list（默认 unroll；xor 时改走 unroll）
+run-rnn: build
+	@demo="$(DEMO)"; \
+	if [ "$$demo" = "xor" ]; then demo=unroll; fi; \
+	RNN_DATA_DIR="$(RNN_DATA_DIR)" $(BUILD_DIR)/rnn_demo $$demo
 
 clean:
 	rm -rf $(BUILD_DIR)

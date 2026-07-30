@@ -11,6 +11,7 @@ set(TRAIN_EVAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/train-
 set(DATA_REPR_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/data-and-representation/code)
 set(CNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/cnn-basics/code)
 set(RESIDUAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/residual-basics/code)
+set(RNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/rnn-seq/code)
 
 # 共享：手写 nn + IDX/下载工具（供多个主题可执行文件复用）
 add_library(mlp_core STATIC
@@ -83,6 +84,22 @@ add_executable(residual_demo
 )
 target_link_libraries(residual_demo PRIVATE residual_core)
 target_compile_options(residual_demo PRIVATE -Wall -Wextra)
+
+add_library(rnn_core STATIC
+    ${RNN_CODE_DIR}/rnn/cell.cpp
+    ${RNN_CODE_DIR}/rnn/net.cpp
+)
+target_include_directories(rnn_core PUBLIC ${RNN_CODE_DIR})
+target_link_libraries(rnn_core PUBLIC mlp_core)
+target_compile_options(rnn_core PRIVATE -Wall -Wextra)
+
+add_executable(rnn_demo
+    ${RNN_CODE_DIR}/main.cpp
+    ${RNN_CODE_DIR}/demos/unroll_demo.cpp
+    ${RNN_CODE_DIR}/demos/temp_demo.cpp
+)
+target_link_libraries(rnn_demo PRIVATE rnn_core)
+target_compile_options(rnn_demo PRIVATE -Wall -Wextra)
 
 add_custom_target(run
     COMMAND $<TARGET_FILE:mlp_demo> xor

@@ -34,7 +34,7 @@
 |------|------|------|
 | [cnn-basics](topics/01-classic-dl/cnn-basics/) | published | 局部连接与权值共享；filter → param → Fashion LeNet |
 | [residual-basics](topics/01-classic-dl/residual-basics/) | published | \(y=x+F(x)\)：identity + Fashion plain/residual CNN |
-| [rnn-seq](topics/01-classic-dl/rnn-seq/) | draft | 状态沿时间传递 |
+| [rnn-seq](topics/01-classic-dl/rnn-seq/) | published | Vanilla RNN；日最低气温下一天预测 |
 | [diffusion-basics](topics/01-classic-dl/diffusion-basics/) | draft | 生成式：噪声 ↔ 数据（含 DiT/flow 衔接） |
 
 ### 02 · Transformers
