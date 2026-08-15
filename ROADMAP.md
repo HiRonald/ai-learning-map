@@ -42,7 +42,7 @@
 
 | 主题 | 状态 | 说明 |
 |------|------|------|
-| [attention-basics](topics/02-transformers/attention-basics/) | draft | Self-Attention 信息路由 |
+| [attention-basics](topics/02-transformers/attention-basics/) | published | numpy Tensor 自动微分；因果 Attention + 最小 GPT 人名 |
 | [llm-lifecycle](topics/02-transformers/llm-lifecycle/) | draft | 预训练 / SFT / 对齐 / test-time compute |
 | [multimodal-basics](topics/02-transformers/multimodal-basics/) | draft | 视觉等模态如何进同一套模型 |
 | [efficient-finetune](topics/02-transformers/efficient-finetune/) | draft | LoRA / PEFT 直觉 |
@@ -119,7 +119,7 @@
 | `rnn-seq` | **C++ 优先** | 小序列手写状态更新；要上长序列再 PyTorch |
 | `lstm-seq` | **C++ 优先** | 门控步进；与 Vanilla RNN 同任务对照即可 |
 | `seq2seq-basics` | **C++ 或 PyTorch** | 短序列 encoder–decoder；带 attention 时再 PyTorch |
-| `attention-basics` | **C++ 或 PyTorch** | 形状级数值玩具可 C++；完整 block 用 PyTorch |
+| `attention-basics` | **Python / numpy** | 手写 Tensor 自动微分 + 最小 GPT。PyTorch 对照留给 `pytorch-basics` |
 | `pytorch-basics` | **Python** | 桥：手写 ↔ `nn` / autograd |
 | `llm-lifecycle` / `multimodal` / `efficient-finetune` | **Python** | 配方与接口 |
 | `prompt` / `rag` / `agents` | **Python** | 应用层 |

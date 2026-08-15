@@ -16,6 +16,10 @@ site/.vitepress/cache/
 .cache/
 compile_commands.json
 
+# Python
+__pycache__/
+*.pyc
+
 # 编辑器
 .vscode/
 .idea/

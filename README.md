@@ -64,6 +64,12 @@ make run-residual                 # 默认 identity：深网学 y=x
 make run-residual DEMO=fashion
 ```
 
+Attention 基础（numpy 最小 GPT）：
+
+```bash
+make run-attention                 # 首次自动下载人名
+```
+
 文档站：
 
 ```bash

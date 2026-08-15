@@ -5,8 +5,11 @@ MODE ?= normal
 MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 TRAIN_EVAL_DATA_DIR ?= $(CURDIR)/topics/00-foundations/train-eval-basics/data
 RNN_DATA_DIR ?= $(CURDIR)/topics/01-classic-dl/rnn-seq/data
+ATTN_DATA_DIR ?= $(CURDIR)/topics/02-transformers/attention-basics/data
+STEPS ?= 1000
+SAMPLES ?= 20
 
-.PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn run-lstm clean rebuild docs docs-dev docs-build
+.PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn run-lstm run-attention clean rebuild docs docs-dev docs-build
 
 all: build
 
@@ -54,6 +57,11 @@ run-lstm: build
 	@demo="$(DEMO)"; \
 	if [ "$$demo" = "xor" ]; then demo=gates; fi; \
 	$(BUILD_DIR)/lstm_demo $$demo
+
+# attention-basics：人名上训最小 GPT。STEPS= / SAMPLES=；首次下载 names.txt → ATTN_DATA_DIR
+run-attention:
+	ATTN_DATA_DIR="$(ATTN_DATA_DIR)" STEPS="$(STEPS)" SAMPLES="$(SAMPLES)" \
+		python3 topics/02-transformers/attention-basics/code/micro_gpt.py
 
 clean:
 	rm -rf $(BUILD_DIR)

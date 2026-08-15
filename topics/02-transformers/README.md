@@ -5,7 +5,7 @@
 
 | 主题 | 状态 |
 |------|------|
-| [attention-basics](./attention-basics/) | draft |
+| [attention-basics](./attention-basics/) | published |
 | [llm-lifecycle](./llm-lifecycle/) | draft |
 | [multimodal-basics](./multimodal-basics/) | draft |
 | [efficient-finetune](./efficient-finetune/) | draft |

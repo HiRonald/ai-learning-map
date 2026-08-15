@@ -1,9 +1,9 @@
 id: attention-basics
 title: Attention 基础：信息如何被路由
 track: transformers
-status: draft
+status: published
 level: 2
 prereq: [mlp-from-scratch, residual-basics]
-langs: []
-tags: [attention, transformer]
+langs: [python]
+tags: [attention, transformer, kv-cache, from-scratch, numpy]
 video: null
