@@ -10,7 +10,8 @@
 | cnn-basics | CNN 基础 | — | — | 待录制 |
 | residual-basics | 残差连接 | — | — | 待录制 |
 | rnn-seq | RNN 序列 | — | — | 待录制 |
-| diffusion-basics | Diffusion 基础 | — | — | 待录制 |
+| lstm-seq | LSTM | — | — | 待录制 |
+| seq2seq-basics | Seq2Seq | — | — | 待录制 |
 | attention-basics | Attention 基础 | — | — | 待录制 |
 | llm-lifecycle | LLM 生命周期 | — | — | 待录制 |
 | multimodal-basics | 多模态基础 | — | — | 待录制 |

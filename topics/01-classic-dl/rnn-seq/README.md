@@ -104,6 +104,5 @@ make run-rnn DEMO=temp     # 首次若无缓存会下载 CSV
 
 ## 局限与下一步
 
-- 不覆盖：LSTM/GRU、多变量气象、刷 SOTA
-- 序列更长 / 依赖更远时，朴素 RNN 容易吃力 → [Attention](../../02-transformers/attention-basics/)
-- 旁路：[Diffusion](../diffusion-basics/)
+- 不覆盖：多变量气象、刷 SOTA
+- 序列更长 / 依赖更远时，朴素 RNN 容易吃力 → [LSTM](../lstm-seq/) → [Seq2Seq](../seq2seq-basics/) → [Attention](../../02-transformers/attention-basics/)

@@ -11,7 +11,7 @@
 | # | Track | 目录 | 一层抽象 | 一句话 |
 |---|-------|------|----------|--------|
 | 00 | Foundations | [`topics/00-foundations/`](topics/00-foundations/) | 学习基本功 | 训练闭环、评测、数据表征 |
-| 01 | Classic DL | [`topics/01-classic-dl/`](topics/01-classic-dl/) | 结构归纳偏置 | CNN / 残差 / RNN / Diffusion |
+| 01 | Classic DL | [`topics/01-classic-dl/`](topics/01-classic-dl/) | 结构归纳偏置 | CNN / 残差 / RNN / LSTM / Seq2Seq |
 | 02 | Transformers | [`topics/02-transformers/`](topics/02-transformers/) | 模型层 | Attention、LLM 炼成、多模态、高效微调 |
 | 03 | Frameworks | [`topics/03-frameworks/`](topics/03-frameworks/) | 工程接口 | PyTorch 对照 from-scratch |
 | 04 | LLM Apps | [`topics/04-llm-apps/`](topics/04-llm-apps/) | 应用层 | Prompt / RAG / Agent（软件工具循环） |
@@ -35,7 +35,8 @@
 | [cnn-basics](topics/01-classic-dl/cnn-basics/) | published | 局部连接与权值共享；filter → param → Fashion LeNet |
 | [residual-basics](topics/01-classic-dl/residual-basics/) | published | \(y=x+F(x)\)：identity + Fashion plain/residual CNN |
 | [rnn-seq](topics/01-classic-dl/rnn-seq/) | published | Vanilla RNN；日最低气温下一天预测 |
-| [diffusion-basics](topics/01-classic-dl/diffusion-basics/) | draft | 生成式：噪声 ↔ 数据（含 DiT/flow 衔接） |
+| [lstm-seq](topics/01-classic-dl/lstm-seq/) | published | 门控 + 二值 delayed recall；对照基线 |
+| [seq2seq-basics](topics/01-classic-dl/seq2seq-basics/) | draft | Encoder–Decoder；收尾接到 Attention |
 
 ### 02 · Transformers
 
@@ -82,7 +83,7 @@
 ```text
 00 Foundations:  mlp-from-scratch → train-eval-basics → data-and-representation
 03 Frameworks:   pytorch-basics   ← 插在 Foundations 后，后续「配方/系统」实验不悬空
-01 Classic DL:   cnn-basics → residual-basics → rnn-seq → diffusion-basics
+01 Classic DL:   cnn-basics → residual-basics → rnn-seq → lstm-seq → seq2seq-basics
 02 Transformers: attention-basics → llm-lifecycle → multimodal-basics / efficient-finetune
 04 LLM Apps:     prompt-and-context → rag-basics → agents-basics
 05 AI Infra:     training-serving-overview → distributed-training-101 / inference-optimization-101 → llmops-observability
@@ -116,8 +117,9 @@
 | `cnn-basics` | **C++** | 卷积滑动 / 共享核 |
 | `residual-basics` | **C++ 优先** | 概念是 \(x+F(x)\)；用已有 `Layer` 做残差 MLP 即可，**不必**再写深 CNN |
 | `rnn-seq` | **C++ 优先** | 小序列手写状态更新；要上长序列再 PyTorch |
+| `lstm-seq` | **C++ 优先** | 门控步进；与 Vanilla RNN 同任务对照即可 |
+| `seq2seq-basics` | **C++ 或 PyTorch** | 短序列 encoder–decoder；带 attention 时再 PyTorch |
 | `attention-basics` | **C++ 或 PyTorch** | 形状级数值玩具可 C++；完整 block 用 PyTorch |
-| `diffusion-basics` | **PyTorch** | toy 去噪；C++ 代价高 |
 | `pytorch-basics` | **Python** | 桥：手写 ↔ `nn` / autograd |
 | `llm-lifecycle` / `multimodal` / `efficient-finetune` | **Python** | 配方与接口 |
 | `prompt` / `rag` / `agents` | **Python** | 应用层 |
@@ -133,7 +135,7 @@
 
 ```text
 00 Foundations     数据/评测/训练闭环
-01 Classic DL      结构（CNN/残差/RNN/扩散）
+01 Classic DL      结构（CNN/残差/RNN/LSTM/Seq2Seq）
 02 Transformers    模型（Transformer/LLM/多模态/PEFT）03 Frameworks      框架 API（轨薄，学习顺序上提前插）
 04 LLM Apps        软件应用（Prompt/RAG/Agent + 协议/记忆要点）
 05 AI Infra        系统（训推/推理引擎/观测·Eval·护栏）
@@ -146,7 +148,7 @@ RAG/Agent 已从 Transformers 拆到 `04-llm-apps`，并与具身 Agent（`06-em
 
 | 拼图 | 落点 | 为何需要 |
 |------|------|----------|
-| 残差 / 深度可训 | `residual-basics` | ResNet、Transformer block、扩散骨干的共同积木 |
+| 残差 / 深度可训 | `residual-basics` | ResNet、Transformer block 的共同积木 |
 | 多模态 | `multimodal-basics` | 业界默认语境已含 VLM |
 | 高效微调 | `efficient-finetune` | 落地微调以 PEFT 为主 |
 | 提示/上下文 | `prompt-and-context` | 应用层最低成本杠杆 |

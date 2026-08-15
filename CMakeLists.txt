@@ -12,6 +12,7 @@ set(DATA_REPR_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/00-foundations/data-an
 set(CNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/cnn-basics/code)
 set(RESIDUAL_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/residual-basics/code)
 set(RNN_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/rnn-seq/code)
+set(LSTM_CODE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/topics/01-classic-dl/lstm-seq/code)
 
 # 共享：手写 nn + IDX/下载工具（供多个主题可执行文件复用）
 add_library(mlp_core STATIC
@@ -100,6 +101,22 @@ add_executable(rnn_demo
 )
 target_link_libraries(rnn_demo PRIVATE rnn_core)
 target_compile_options(rnn_demo PRIVATE -Wall -Wextra)
+
+add_library(lstm_core STATIC
+    ${LSTM_CODE_DIR}/lstm/cell.cpp
+    ${LSTM_CODE_DIR}/lstm/net.cpp
+)
+target_include_directories(lstm_core PUBLIC ${LSTM_CODE_DIR})
+target_link_libraries(lstm_core PUBLIC mlp_core)
+target_compile_options(lstm_core PRIVATE -Wall -Wextra)
+
+add_executable(lstm_demo
+    ${LSTM_CODE_DIR}/main.cpp
+    ${LSTM_CODE_DIR}/demos/gates_demo.cpp
+    ${LSTM_CODE_DIR}/demos/recall_demo.cpp
+)
+target_link_libraries(lstm_demo PRIVATE lstm_core rnn_core)
+target_compile_options(lstm_demo PRIVATE -Wall -Wextra)
 
 add_custom_target(run
     COMMAND $<TARGET_FILE:mlp_demo> xor

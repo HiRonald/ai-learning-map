@@ -1,0 +1,9 @@
+id: seq2seq-basics
+title: Seq2Seq：编码器–解码器如何映射序列
+track: classic-dl
+status: draft
+level: 2
+prereq: [rnn-seq, lstm-seq]
+langs: []
+tags: [seq2seq, encoder-decoder, lstm, sequence]
+video: null

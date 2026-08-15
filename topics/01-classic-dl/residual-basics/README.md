@@ -35,4 +35,4 @@ make run-residual DEMO=fashion    # 朴素卷积，约数分钟
 ## 局限与下一步
 
 - 不覆盖：ResNet-50、BN、ImageNet
-- 下一站：[RNN](../rnn-seq/) → [Diffusion](../diffusion-basics/) 或 [Attention](../../02-transformers/attention-basics/)
+- 下一站：[RNN](../rnn-seq/) → [Attention](../../02-transformers/attention-basics/)

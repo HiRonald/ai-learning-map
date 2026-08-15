@@ -1,0 +1,9 @@
+id: lstm-seq
+title: LSTM：门控如何管住长依赖
+track: classic-dl
+status: published
+level: 2
+prereq: [rnn-seq]
+langs: [cpp]
+tags: [lstm, gated-rnn, sequence, delayed-recall, from-scratch]
+video: null

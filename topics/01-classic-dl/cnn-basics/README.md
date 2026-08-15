@@ -44,4 +44,4 @@ make run-cnn DEMO=fashion    # 首次若无缓存会下载 Fashion-MNIST
 - 故意没做：im2col、GPU、BatchNorm、检测/分割；LeNet 用 ReLU+MaxPool 而非原版 tanh+AvgPool
 - Fashion 轮廓对 MLP 太友好，**不是**刷分擂台；看参数量与归纳偏置
 - 墙钟慢是教学实现（嵌套循环）的代价，不是卷积「本质更慢」
-- 下一站：[残差连接](../residual-basics/) → [RNN 序列](../rnn-seq/) → [Diffusion 基础](../diffusion-basics/) 或 [Attention](../../02-transformers/attention-basics/)；框架对照见 [PyTorch 基础](../../03-frameworks/pytorch-basics/)
+- 下一站：[残差连接](../residual-basics/) → [RNN 序列](../rnn-seq/) → [Attention](../../02-transformers/attention-basics/)；框架对照见 [PyTorch 基础](../../03-frameworks/pytorch-basics/)

@@ -25,5 +25,5 @@ make run-residual DEMO=fashion    # plain CNN vs residual CNN
 
 ## 结尾引导
 
-- 下一站：RNN / Diffusion，或 Attention block 里的残差
+- 下一站：RNN，或 Attention block 里的残差
 - 路径：`topics/01-classic-dl/residual-basics/`
