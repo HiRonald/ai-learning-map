@@ -5,5 +5,5 @@ status: published
 level: 2
 prereq: [mlp-from-scratch, residual-basics]
 langs: [python]
-tags: [attention, transformer, kv-cache, from-scratch, numpy]
+tags: [attention, transformer, from-scratch, numpy, pytorch]
 video: null

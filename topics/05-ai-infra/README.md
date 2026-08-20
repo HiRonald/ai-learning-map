@@ -6,6 +6,6 @@
 | 主题 | 状态 |
 |------|------|
 | [training-serving-overview](./training-serving-overview/) | draft |
-| [distributed-training-101](./distributed-training-101/) | draft |
+| [distributed-training-101](./distributed-training-101/) | published |
 | [inference-optimization-101](./inference-optimization-101/) | draft |
 | [llmops-observability](./llmops-observability/) | draft |

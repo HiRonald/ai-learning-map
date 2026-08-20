@@ -8,7 +8,7 @@ numpy Tensor 版最小 GPT（无 PyTorch）。
   1. Tensor 自动微分
   2. 网络算子
   3. 数据与分词
-  4. 超参与 GPT 前向（单 token + KV cache）
+  4. 超参与 GPT 前向（batch × 序列，因果 mask）
   5. AdamW / 训练 / 采样
 '''
 
@@ -75,9 +75,6 @@ class Tensor:
 
     def __repr__(self) -> str:
         return f'Tensor(shape={self.shape})'
-
-    def detach(self) -> Tensor:
-        return Tensor(self.data)
 
     # --- 算术：+ * @ ** ---
 
@@ -279,18 +276,6 @@ class Tensor:
             node._backward()
 
 
-def stack(tensors: list[Tensor], axis: int = 0) -> Tensor:
-    out = Tensor(np.stack([t.data for t in tensors], axis=axis), tuple(tensors))
-
-    def backward() -> None:
-        gs = np.moveaxis(out.grad, axis, 0)
-        for t, g in zip(tensors, gs):
-            t.grad += g
-
-    out._backward = backward
-    return out
-
-
 # ---------------------------------------------------------------------------
 # 2. 网络算子
 # ---------------------------------------------------------------------------
@@ -308,8 +293,9 @@ def rmsnorm(x: Tensor) -> Tensor:
 
 
 def linear(x: Tensor, w: Tensor) -> Tensor:
-    # 与 PyTorch F.linear(x, w) 相同：x @ w.T，w 形状 (out, in)
-    return x @ w.T
+    # F.linear: x @ w.T，w 形状 (out, in)。先摊成 2D，避开 3D np.dot 语义
+    out_f, in_f = w.shape
+    return (x.reshape(-1, in_f) @ w.T).reshape(*x.shape[:-1], out_f)
 
 
 # ---------------------------------------------------------------------------
@@ -342,15 +328,14 @@ def load_names() -> tuple[list[str], dict[str, int], list[str], int, int]:
 
 
 # ---------------------------------------------------------------------------
-# 4. 超参与 GPT 前向（单 token + KV cache）
+# 4. 超参与 GPT 前向（batch × 序列，因果 mask）
 # ---------------------------------------------------------------------------
 
 EMB_DIM = 16
 LAYER_NUM = 1
 HEAD_NUM = 4
 HEAD_DIM = EMB_DIM // HEAD_NUM
-
-KVCache = list[list[Tensor]]  # layer -> 历史 K 或 V，每个 shape (emb,)
+BATCH_SIZE = 32
 
 
 def randn_matrix(out_features: int, in_features: int, std: float = 0.08) -> Tensor:
@@ -373,48 +358,81 @@ def init_params(vocab_size: int, block_size: int) -> dict[str, Tensor]:
     return state
 
 
-def empty_kv_cache() -> KVCache:
-    return [[] for _ in range(LAYER_NUM)]
+def split_heads(x: Tensor) -> Tensor:
+    """(B, T, C) → (B, H, T, D)。一次大投影再切开，等价于 H 套独立的 Wq/Wk/Wv。"""
+    batch, seq, _ = x.shape
+    return x.reshape(batch, seq, HEAD_NUM, HEAD_DIM).transpose(1, 2)
 
 
-def gpt(
-    token_id: int,
-    pos_id: int,
-    keys: KVCache,
-    values: KVCache,
-    state: dict[str, Tensor],
-    *,
-    detach_cache: bool = False,
-) -> Tensor:
-    """Pre-norm block；逐步吃 token，K/V 缓存在 keys/values 里。"""
-    x = state['wte'][token_id] + state['wpe'][pos_id]  # (emb,)
+def merge_heads(x: Tensor) -> Tensor:
+    """(B, H, T, D) → (B, T, C)，交给 W_o 混回头之间的信息。"""
+    batch, _, seq, _ = x.shape
+    return x.transpose(1, 2).reshape(batch, seq, EMB_DIM)
 
+
+def multi_head_attention(q: Tensor, k: Tensor, v: Tensor) -> Tensor:
+    """因果多头。q,k,v: (B, T, C) → (B, T, C)。
+
+    每个头一份 (T, T) 权重（最后一维独立 softmax），互不共享。
+    右 padding + 因果 mask 时，真 token 看不到 pad。
+    """
+    qh, kh, vh = split_heads(q), split_heads(k), split_heads(v)  # (B, H, T, D)
+    batch, _, seq, _ = qh.shape
+    scores = (
+        qh.reshape(batch, HEAD_NUM, seq, 1, HEAD_DIM)
+        * kh.reshape(batch, HEAD_NUM, 1, seq, HEAD_DIM)
+    ).sum(axis=-1) / HEAD_DIM ** 0.5  # (B, H, T, T)
+    scores = scores + Tensor(np.triu(np.full((seq, seq), -1e9), k=1))
+    weights = softmax(scores, axis=-1)
+    out = (
+        weights.reshape(batch, HEAD_NUM, seq, seq, 1)
+        * vh.reshape(batch, HEAD_NUM, 1, seq, HEAD_DIM)
+    ).sum(axis=3)  # (B, H, T, D)
+    return merge_heads(out)
+
+
+def gpt(token_ids: np.ndarray, state: dict[str, Tensor]) -> Tensor:
+    """token_ids (B, T) int → logits (B, T, vocab)。时间维一次算完，用因果 mask 防偷看。"""
+    seq = token_ids.shape[1]
+    x = state['wte'][token_ids] + state['wpe'][np.arange(seq)]
     for li in range(LAYER_NUM):
-        x_residual = x
-        x = rmsnorm(x)
-        q = linear(x, state[f'layer{li}.attn_wq'])
-        k = linear(x, state[f'layer{li}.attn_wk'])
-        v = linear(x, state[f'layer{li}.attn_wv'])
-        keys[li].append(k.detach() if detach_cache else k)
-        values[li].append(v.detach() if detach_cache else v)
+        h = rmsnorm(x)
+        q = linear(h, state[f'layer{li}.attn_wq'])
+        k = linear(h, state[f'layer{li}.attn_wk'])
+        v = linear(h, state[f'layer{li}.attn_wv'])
+        x = x + linear(multi_head_attention(q, k, v), state[f'layer{li}.attn_wo'])
+        h = rmsnorm(x)
+        x = x + linear(linear(h, state[f'layer{li}.mlp_fc1']).relu(), state[f'layer{li}.mlp_fc2'])
+    return linear(rmsnorm(x), state['lm_head'])
 
-        # (emb,) -> (H, D)；序列 K/V -> (H, T, D)，一次算完所有头
-        q_h = q.reshape(HEAD_NUM, HEAD_DIM)
-        k_h = stack(keys[li]).reshape(-1, HEAD_NUM, HEAD_DIM).transpose(0, 1)
-        v_h = stack(values[li]).reshape(-1, HEAD_NUM, HEAD_DIM).transpose(0, 1)
-        attn_logits = (q_h.reshape(HEAD_NUM, 1, HEAD_DIM) * k_h).sum(axis=-1) / HEAD_DIM ** 0.5
-        attn_weights = softmax(attn_logits, axis=-1)  # (H, T)
-        head_out = (attn_weights.reshape(HEAD_NUM, -1, 1) * v_h).sum(axis=1)  # (H, D)
-        x = linear(head_out.reshape(EMB_DIM), state[f'layer{li}.attn_wo'])
-        x = x + x_residual
 
-        x_residual = x
-        x = rmsnorm(x)
-        x = linear(x, state[f'layer{li}.mlp_fc1']).relu()
-        x = linear(x, state[f'layer{li}.mlp_fc2'])
-        x = x + x_residual
+def make_batch(
+    batch_names: list[str],
+    stoi: dict[str, int],
+    eos: int,
+    block_size: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """右 padding 到本 batch 最长。x/y/mask 都是 (B, T)；pad 位用 eos，loss 用 mask 丢掉。"""
+    seqs = [[eos] + [stoi[ch] for ch in name] + [eos] for name in batch_names]
+    lengths = [min(len(seq) - 1, block_size) for seq in seqs]
+    seq_len = max(lengths)
+    batch = len(seqs)
+    x = np.full((batch, seq_len), eos, dtype=np.int64)
+    y = np.full((batch, seq_len), eos, dtype=np.int64)
+    mask = np.zeros((batch, seq_len), dtype=np.float64)
+    for i, seq in enumerate(seqs):
+        n = lengths[i]
+        x[i, :n] = seq[:n]
+        y[i, :n] = seq[1:n + 1]
+        mask[i, :n] = 1.0
+    return x, y, mask
 
-    return linear(rmsnorm(x), state['lm_head'])  # (vocab,)
+
+def masked_nll(logits: Tensor, targets: np.ndarray, mask: np.ndarray) -> Tensor:
+    batch, seq, vocab = logits.shape
+    probs = softmax(logits.reshape(batch * seq, vocab), axis=-1)
+    nll = -probs[np.arange(batch * seq), targets.reshape(-1)].log()
+    return (nll.reshape(batch, seq) * mask).sum() / float(mask.sum())
 
 
 # ---------------------------------------------------------------------------
@@ -446,25 +464,21 @@ def train(
     state: dict[str, Tensor],
     num_steps: int,
     learning_rate: float,
+    batch_size: int,
 ) -> None:
     params = list(state.values())
     print(f'num of names: {len(names)}')
     print(f'num params: {sum(p.data.size for p in params)}')
+    print(f'batch size: {batch_size}')
     print('Training...')
     m = [np.zeros_like(p.data) for p in params]
     v = [np.zeros_like(p.data) for p in params]
     for step in range(num_steps):
-        name = names[step % len(names)]
-        tokens = [eos] + [stoi[ch] for ch in name] + [eos]
-        n = min(block_size, len(tokens) - 1)
-        keys, values = empty_kv_cache(), empty_kv_cache()
-
-        losses: list[Tensor] = []
-        for pos_id in range(n):
-            token_id, target_id = tokens[pos_id], tokens[pos_id + 1]
-            logits = gpt(token_id, pos_id, keys, values, state)
-            losses.append(-softmax(logits)[target_id].log())
-        loss = (1 / n) * sum(losses)
+        start = (step * batch_size) % len(names)
+        batch_names = [names[(start + i) % len(names)] for i in range(batch_size)]
+        token_ids, targets, mask = make_batch(batch_names, stoi, eos, block_size)
+        logits = gpt(token_ids, state)
+        loss = masked_nll(logits, targets, mask)
         loss.backward()
         adamw_optimize(params, m, v, learning_rate, step)
         print(f'step {step + 1:4d} / {num_steps:4d} | loss {float(loss.data):.4f}', end='\r')
@@ -482,23 +496,23 @@ def inference(
 ) -> None:
     print('Inference...')
     for sample_idx in range(num_samples):
-        keys, values = empty_kv_cache(), empty_kv_cache()
-        token_id = eos
+        token_ids = [eos]
         output: list[str] = []
-        for pos_id in range(block_size):
-            logits = gpt(token_id, pos_id, keys, values, state, detach_cache=True)
-            probs = softmax(logits / temperature)
+        for _ in range(block_size):
+            logits = gpt(np.array([token_ids], dtype=np.int64), state)
+            probs = softmax(logits[0, -1] / temperature)
             next_token_id = random.choices(range(vocab_size), weights=probs.data.tolist())[0]
             if next_token_id == eos:
                 break
             output.append(charlist[next_token_id])
-            token_id = next_token_id
+            token_ids.append(next_token_id)
         print(f'sample {sample_idx + 1:2d} output: {"".join(output)}')
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description='Train a tiny GPT on makemore names, then sample.')
     parser.add_argument('--steps', type=int, default=int(os.environ.get('STEPS', '1000')))
+    parser.add_argument('--batch', type=int, default=int(os.environ.get('BATCH', str(BATCH_SIZE))))
     parser.add_argument('--lr', type=float, default=float(os.environ.get('LR', '0.001')))
     parser.add_argument('--samples', type=int, default=int(os.environ.get('SAMPLES', '20')))
     parser.add_argument('--temperature', type=float, default=0.1)
@@ -507,7 +521,7 @@ def main(argv: list[str] | None = None) -> int:
     names, stoi, charlist, eos, block_size = load_names()
     vocab_size = eos + 1
     state = init_params(vocab_size, block_size)
-    train(names, stoi, eos, block_size, state, args.steps, args.lr)
+    train(names, stoi, eos, block_size, state, args.steps, args.lr, args.batch)
     inference(charlist, eos, vocab_size, block_size, state, args.samples, args.temperature)
     return 0
 

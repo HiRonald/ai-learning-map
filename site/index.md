@@ -33,6 +33,9 @@ make run-eval            # train/val/test 学习曲线
 make run-repr            # tokenize → embedding 查表
 make run-cnn             # filter；DEMO=param|fashion
 make run-residual        # identity；DEMO=fashion
+make run-attention       # 人名玩具 GPT
+make run-nanogpt         # nanoGPT 莎士比亚（单进程）
+make run-ddp             # 同上 + 2 进程 DDP
 ```
 
 ## 本地预览本站

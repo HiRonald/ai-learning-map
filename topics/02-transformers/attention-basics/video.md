@@ -12,7 +12,7 @@ Q / K / V：我在找什么、你有什么、取走什么。路由，不是固�
 
 ## 第二段：结构
 
-公式一行带过。点一句：逐步 + KV cache 与下三角因果 mask 等价。
+公式一行带过。点一句：变长名字右 padding 成 `(B, T)`；因果 mask 让位置 \(t\) 只看过去。多头 = 一次投影再拆成 \(H\) 张独立的路由表。
 
 ## 第三段：实验演示
 
@@ -24,6 +24,6 @@ make run-attention
 
 ## 结尾引导
 
-- 收获：Attention 是按相似度路由；因果 mask / KV cache 是同一约束的两种写法
+- 收获：Attention 是按相似度路由；训练用因果 mask 并行看整段，和逐步生成是同一约束
 - 下一站：LLM 生命周期（预训练 / SFT / 对齐）
 - 路径：`topics/02-transformers/attention-basics/`

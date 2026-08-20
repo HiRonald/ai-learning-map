@@ -64,10 +64,19 @@ make run-residual                 # 默认 identity：深网学 y=x
 make run-residual DEMO=fashion
 ```
 
-Attention 基础（numpy 最小 GPT）：
+Attention 基础（最小 GPT：numpy / PyTorch 对照）：
 
 ```bash
-make run-attention                 # 首次自动下载人名
+make run-attention                 # 手写 Tensor
+make run-attention-torch           # 同一网络的 PyTorch 版
+```
+
+分布式训练（nanoGPT 字符级莎士比亚 + DDP）：
+
+```bash
+make run-nanogpt                   # 单进程 demo
+make run-ddp                       # 2 进程 DDP
+make run-nanogpt PRESET=shakespeare
 ```
 
 文档站：

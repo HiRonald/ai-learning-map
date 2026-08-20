@@ -6,10 +6,14 @@ MLP_DATA_DIR ?= $(CURDIR)/topics/00-foundations/mlp-from-scratch/data
 TRAIN_EVAL_DATA_DIR ?= $(CURDIR)/topics/00-foundations/train-eval-basics/data
 RNN_DATA_DIR ?= $(CURDIR)/topics/01-classic-dl/rnn-seq/data
 ATTN_DATA_DIR ?= $(CURDIR)/topics/02-transformers/attention-basics/data
+DDP_DATA_DIR ?= $(CURDIR)/topics/05-ai-infra/distributed-training-101/data
 STEPS ?= 1000
 SAMPLES ?= 20
+BATCH ?= 32
+PRESET ?= demo
+NPROC ?= 2
 
-.PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn run-lstm run-attention clean rebuild docs docs-dev docs-build
+.PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn run-lstm run-attention run-attention-torch run-nanogpt run-ddp run-nanogpt-sample clean rebuild docs docs-dev docs-build
 
 all: build
 
@@ -58,10 +62,31 @@ run-lstm: build
 	if [ "$$demo" = "xor" ]; then demo=gates; fi; \
 	$(BUILD_DIR)/lstm_demo $$demo
 
-# attention-basics：人名上训最小 GPT。STEPS= / SAMPLES=；首次下载 names.txt → ATTN_DATA_DIR
+# attention-basics：人名上训最小 GPT。STEPS= / BATCH= / SAMPLES=；首次下载 names.txt → ATTN_DATA_DIR
 run-attention:
-	ATTN_DATA_DIR="$(ATTN_DATA_DIR)" STEPS="$(STEPS)" SAMPLES="$(SAMPLES)" \
+	ATTN_DATA_DIR="$(ATTN_DATA_DIR)" STEPS="$(STEPS)" BATCH="$(BATCH)" SAMPLES="$(SAMPLES)" \
 		python3 topics/02-transformers/attention-basics/code/micro_gpt.py
+
+run-attention-torch:
+	ATTN_DATA_DIR="$(ATTN_DATA_DIR)" STEPS="$(STEPS)" BATCH="$(BATCH)" SAMPLES="$(SAMPLES)" \
+		python3 topics/02-transformers/attention-basics/code/micro_gpt_torch.py
+
+# distributed-training-101：nanoGPT Shakespeare。PRESET=demo|shakespeare；STEPS= / BATCH= 仅命令行覆盖时传入
+run-nanogpt:
+	DDP_DATA_DIR="$(DDP_DATA_DIR)" PRESET="$(PRESET)" \
+		$(if $(filter command line,$(origin STEPS)),STEPS="$(STEPS)") \
+		$(if $(filter command line,$(origin BATCH)),BATCH="$(BATCH)") \
+		python3 topics/05-ai-infra/distributed-training-101/code/train.py
+
+run-ddp:
+	DDP_DATA_DIR="$(DDP_DATA_DIR)" PRESET="$(PRESET)" \
+		$(if $(filter command line,$(origin STEPS)),STEPS="$(STEPS)") \
+		$(if $(filter command line,$(origin BATCH)),BATCH="$(BATCH)") \
+		python3 topics/05-ai-infra/distributed-training-101/code/train.py --nproc $(NPROC)
+
+run-nanogpt-sample:
+	DDP_DATA_DIR="$(DDP_DATA_DIR)" \
+		python3 topics/05-ai-infra/distributed-training-101/code/train.py --sample-only
 
 clean:
 	rm -rf $(BUILD_DIR)

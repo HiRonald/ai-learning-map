@@ -66,7 +66,7 @@
 | 主题 | 状态 | 说明 |
 |------|------|------|
 | [training-serving-overview](topics/05-ai-infra/training-serving-overview/) | draft | 数据 → 训练 → 导出 → Serving |
-| [distributed-training-101](topics/05-ai-infra/distributed-training-101/) | draft | 数据并行直觉 |
+| [distributed-training-101](topics/05-ai-infra/distributed-training-101/) | published | nanoGPT 莎士比亚 + PyTorch DDP |
 | [inference-optimization-101](topics/05-ai-infra/inference-optimization-101/) | draft | 量化、批处理、KV Cache；vLLM 等引擎落点 |
 | [llmops-observability](topics/05-ai-infra/llmops-observability/) | draft | 追踪、Eval、护栏与反馈飞轮 |
 

@@ -1,9 +1,9 @@
 id: distributed-training-101
-title: 分布式训练 101
+title: 分布式训练 101：nanoGPT × DDP
 track: ai-infra
-status: draft
+status: published
 level: 2
-prereq: [training-serving-overview]
-langs: []
-tags: [distributed, data-parallel, ddp]
+prereq: [pytorch-basics, attention-basics, training-serving-overview]
+langs: [python]
+tags: [distributed, data-parallel, ddp, nanogpt, pytorch]
 video: null
