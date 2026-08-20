@@ -12,6 +12,8 @@ SAMPLES ?= 20
 BATCH ?= 32
 PRESET ?= demo
 NPROC ?= 2
+RESUME ?=
+COMPILE ?=
 
 .PHONY: all configure build run run-eval run-repr run-cnn run-residual run-rnn run-lstm run-attention run-attention-torch run-nanogpt run-ddp run-nanogpt-sample clean rebuild docs docs-dev docs-build
 
@@ -76,7 +78,10 @@ run-nanogpt:
 	DDP_DATA_DIR="$(DDP_DATA_DIR)" PRESET="$(PRESET)" \
 		$(if $(filter command line,$(origin STEPS)),STEPS="$(STEPS)") \
 		$(if $(filter command line,$(origin BATCH)),BATCH="$(BATCH)") \
-		python3 topics/05-ai-infra/distributed-training-101/code/train.py
+		$(if $(RESUME),RESUME="$(RESUME)") \
+		$(if $(COMPILE),COMPILE="$(COMPILE)") \
+		python3 topics/05-ai-infra/distributed-training-101/code/train.py \
+		$(if $(RESUME),--resume) $(if $(COMPILE),--compile)
 
 run-ddp:
 	DDP_DATA_DIR="$(DDP_DATA_DIR)" PRESET="$(PRESET)" \

@@ -1,15 +1,16 @@
 '''
-nanoGPT 风格的 GPT-2 decoder（Karpathy / OpenAI GPT-2 结构）。
+nanoGPT 的 GPT-2 decoder（对齐 karpathy/nanoGPT model.py）。
 
 对照 attention-basics/micro_gpt_torch.py：
   RMSNorm → LayerNorm；ReLU → GELU；分拆 Wq/Wk/Wv → 一次 c_attn；
-  无权重共享 → wte 与 lm_head 绑同一份；人名 padding → 本主题用长流切块。
+  无权重共享 → wte 与 lm_head 绑同一份。
 
 阅读顺序: GPTConfig → CausalSelfAttention → Block → GPT
 '''
 
 from __future__ import annotations
 
+import inspect
 import math
 from dataclasses import dataclass
 
@@ -26,7 +27,20 @@ class GPTConfig:
     n_head: int = 6
     n_embd: int = 384
     dropout: float = 0.2
-    bias: bool = True  # GPT-2 有 bias；False 略快一点
+    # nanoGPT train.py 默认 False；shakespeare_char 没覆盖，所以复现时也是 False
+    bias: bool = False
+
+
+class LayerNorm(nn.Module):
+    """LayerNorm，可关掉 bias（PyTorch 自带的不行）。"""
+
+    def __init__(self, ndim: int, bias: bool) -> None:
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(ndim))
+        self.bias = nn.Parameter(torch.zeros(ndim)) if bias else None
+
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
+        return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
 
 
 class CausalSelfAttention(nn.Module):
@@ -82,9 +96,10 @@ class MLP(nn.Module):
         self.c_fc = nn.Linear(config.n_embd, 4 * config.n_embd, bias=config.bias)
         self.c_proj = nn.Linear(4 * config.n_embd, config.n_embd, bias=config.bias)
         self.dropout = nn.Dropout(config.dropout)
+        self.gelu = nn.GELU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.dropout(self.c_proj(F.gelu(self.c_fc(x))))
+        return self.dropout(self.c_proj(self.gelu(self.c_fc(x))))
 
 
 class Block(nn.Module):
@@ -92,9 +107,9 @@ class Block(nn.Module):
 
     def __init__(self, config: GPTConfig) -> None:
         super().__init__()
-        self.ln_1 = nn.LayerNorm(config.n_embd)
+        self.ln_1 = LayerNorm(config.n_embd, bias=config.bias)
         self.attn = CausalSelfAttention(config)
-        self.ln_2 = nn.LayerNorm(config.n_embd)
+        self.ln_2 = LayerNorm(config.n_embd, bias=config.bias)
         self.mlp = MLP(config)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -106,16 +121,17 @@ class Block(nn.Module):
 class GPT(nn.Module):
     def __init__(self, config: GPTConfig) -> None:
         super().__init__()
+        assert config.vocab_size is not None
+        assert config.block_size is not None
         self.config = config
         self.transformer = nn.ModuleDict(dict(
             wte=nn.Embedding(config.vocab_size, config.n_embd),
             wpe=nn.Embedding(config.block_size, config.n_embd),
             drop=nn.Dropout(config.dropout),
             h=nn.ModuleList([Block(config) for _ in range(config.n_layer)]),
-            ln_f=nn.LayerNorm(config.n_embd),
+            ln_f=LayerNorm(config.n_embd, bias=config.bias),
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
-        # 权重共享：token embed 和输出投影是同一份矩阵（nanoGPT / GPT-2）
         self.transformer.wte.weight = self.lm_head.weight
         self.apply(self._init_weights)
         for name, param in self.named_parameters():
@@ -130,28 +146,63 @@ class GPT(nn.Module):
         elif isinstance(module, nn.Embedding):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
-    def n_params(self) -> int:
-        # 不算位置 embed；token embed 因权重共享其实是 lm_head，算进去
-        return sum(p.numel() for p in self.parameters()) - self.transformer.wpe.weight.numel()
+    def n_params(self, non_embedding: bool = True) -> int:
+        n_params = sum(p.numel() for p in self.parameters())
+        if non_embedding:
+            n_params -= self.transformer.wpe.weight.numel()
+        return n_params
+
+    def configure_optimizers(
+        self,
+        weight_decay: float,
+        learning_rate: float,
+        betas: tuple[float, float],
+        device_type: str,
+    ) -> torch.optim.AdamW:
+        """二维参数 weight decay；bias / LayerNorm 不 decay。CUDA 上尽量 fused AdamW。"""
+        param_dict = {pn: p for pn, p in self.named_parameters() if p.requires_grad}
+        decay_params = [p for p in param_dict.values() if p.dim() >= 2]
+        nodecay_params = [p for p in param_dict.values() if p.dim() < 2]
+        optim_groups = [
+            {'params': decay_params, 'weight_decay': weight_decay},
+            {'params': nodecay_params, 'weight_decay': 0.0},
+        ]
+        fused_available = 'fused' in inspect.signature(torch.optim.AdamW).parameters
+        use_fused = fused_available and device_type == 'cuda'
+        extra = dict(fused=True) if use_fused else dict()
+        return torch.optim.AdamW(optim_groups, lr=learning_rate, betas=betas, **extra)
+
+    def estimate_mfu(self, fwdbwd_per_iter: int, dt: float) -> float:
+        """相对 A100 bfloat16 峰值的 MFU（和 nanoGPT 同一把尺）。"""
+        n_params = self.n_params()
+        cfg = self.config
+        layer, head, head_dim, seq = cfg.n_layer, cfg.n_head, cfg.n_embd // cfg.n_head, cfg.block_size
+        flops_per_token = 6 * n_params + 12 * layer * head * head_dim * seq
+        flops_per_fwdbwd = flops_per_token * seq
+        flops_per_iter = flops_per_fwdbwd * fwdbwd_per_iter
+        flops_achieved = flops_per_iter * (1.0 / dt)
+        flops_promised = 312e12
+        return flops_achieved / flops_promised
 
     def forward(
         self,
         idx: torch.Tensor,
         targets: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor | None]:
-        """idx (B, T) → logits (B, T, vocab)；给了 targets 则一并返回 mean CE。"""
+        """idx (B, T) → logits；给了 targets 则返回 mean CE。推理只算最后一个位置。"""
         _, seq = idx.size()
         assert seq <= self.config.block_size
-        pos = torch.arange(seq, device=idx.device)
+        pos = torch.arange(0, seq, dtype=torch.long, device=idx.device)
         x = self.transformer.drop(self.transformer.wte(idx) + self.transformer.wpe(pos))
         for block in self.transformer.h:
             x = block(x)
         x = self.transformer.ln_f(x)
-        logits = self.lm_head(x)
-        loss = None
         if targets is not None:
-            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
-        return logits, loss
+            logits = self.lm_head(x)
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1), ignore_index=-1)
+            return logits, loss
+        logits = self.lm_head(x[:, [-1], :])
+        return logits, None
 
     @torch.no_grad()
     def generate(
@@ -163,7 +214,7 @@ class GPT(nn.Module):
     ) -> torch.Tensor:
         self.eval()
         for _ in range(max_new_tokens):
-            idx_cond = idx[:, -self.config.block_size:]
+            idx_cond = idx if idx.size(1) <= self.config.block_size else idx[:, -self.config.block_size:]
             logits, _ = self(idx_cond)
             logits = logits[:, -1, :] / temperature
             if top_k is not None:

@@ -57,23 +57,26 @@ distributed-training-101/
 ├── README.md / notes.md / video.md / meta.yaml
 └── code/
     ├── model.py    # GPT-2 decoder（nanoGPT 结构）
-    └── train.py    # 数据 / 单进程 / DDP / 采样
+    ├── train.py    # 数据 / 单进程 / DDP
+    ├── sample.py   # 从 ckpt 采样
+    ├── train.sh    # 训练入口（顶部改参数）
+    └── sample.sh   # 推理入口
 ```
 
 ## 例子
 
 ```bash
-# 仓库根目录。首次下载 input.txt → topics/05-ai-infra/distributed-training-101/data/
-make run-nanogpt                 # 单进程；自动 cuda / mps / cpu
-make run-ddp                     # 2 进程 DDP（Mac 上 gloo+CPU；NVIDIA 上 nccl）
-make run-nanogpt PRESET=shakespeare   # 完整 baby GPT，约 10M 参，5000 步
-make run-nanogpt STEPS=50        # 冒烟
-make run-nanogpt-sample          # 读 data/ckpt.pt 再采样
+# 仓库根目录 make 仍可用；改超参更方便直接编脚本：
+cd topics/05-ai-infra/distributed-training-101/code
+./train.sh                       # 打开脚本改 PRESET / STEPS / LR / NPROC …
+./train.sh --steps 200            # 命令行覆盖脚本里的值
+./sample.sh                      # 读 ../data/ckpt.pt
+./sample.sh --prompt "HAMLET:" --tokens 400 --samples 5
 ```
 
-预期：`demo` 的 train loss 从 ~4（随机，vocab≈65）往 2 附近掉；采样是还能认出来的英文台词碎片，不是人名。`shakespeare` 预设会过拟合这块小语料（Karpathy 原文也这么说），val 先降后升是正常的。
+预期：`demo` 的 train loss 从 ~4（随机，vocab≈65）往 2 附近掉；采样是还能认出来的英文台词碎片，不是人名。`shakespeare` 预设会过拟合这块小语料（Karpathy 原文也这么说），val 先降后升是正常的。每 250 步 eval，**val 变好才写 `ckpt.pt`**（含优化器和步数）；Ctrl+C 之后 `RESUME=1` 从上次最好的 val 接着训。
 
-依赖：`pytorch`。
+依赖：`pytorch`、`numpy`。
 
 设备：
 
