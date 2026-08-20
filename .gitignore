@@ -1,8 +1,14 @@
 # 构建产物（CMake out-of-source）
 /build/
 
-# 主题下载的数据集（体积大，首次运行自动拉取）
+# 数据集（体积大，首次运行自动拉取）
 topics/**/data/
+/data/
+
+# 训练权重 / Jupyter 自动保存
+*.pth
+*.pt
+.ipynb_checkpoints/
 
 # 文档站
 site/node_modules/
